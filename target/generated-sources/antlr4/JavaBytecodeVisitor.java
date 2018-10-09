@@ -7,48 +7,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
-	Map<String, interfaceNode> interfaceList = new HashMap<>();
-	Map<String, classNode> classList = new HashMap<>();
 	
-	class interfaceNode {
-		private List<String> abstractMethods;
-		
-		public interfaceNode() {
-			this.abstractMethods = new ArrayList<>();
-		}
-		
-		public List<String> getAbstractMethods() {
-			return this.abstractMethods;
-		}
-	}
-	
-	class classNode {
-		private List<String> classVariables;
-		private List<String> classStaticVariables;
-		private List<String> classMethods;
-		
-		public classNode() {
-			this.classMethods = new ArrayList<>();
-		}
-		
-		public List<String> getClassVariables() {
-			return this.classVariables;
-		}
-		
-		public List<String> getClassMethods() {
-			return this.classMethods;
-		}
-	}
-//	class methodInfoNode {
-//		private String methodName;
-//		private List<String> methodParams = new ArrayList<String>();
-//		
-//		public methodInfoNode(String methodName, String variable) {
-//			this.methodName = methodName;
-//			this.methodParams.add(variable);
-//		}
-//	}
-	
+
 	@Override
 	public String visitProgram(HelloParser.ProgramContext ctx) {
 		// TODO Auto-generated method stub
@@ -98,7 +58,7 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		//System.out.println("\nInterface decl");
 		String str = "interface ";
 		System.out.print(str);
-		interfaceList.put(ctx.ident().getText(), null);
+		
 		return super.visitInterface_decl(ctx);
 	}
 	
@@ -123,10 +83,7 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		 * Saving information about the interface's method list
 		 */
 		String interfaceName = getInterfaceName(ctx);
-		interfaceNode interfaceNode = new interfaceNode();
-		List<String> abstractMethods = interfaceNode.getAbstractMethods();
-		abstractMethods.add(ctx.ident().getText());
-		this.interfaceList.replace(interfaceName, interfaceNode);
+		
 		
 		visit(ctx.getChild(0)); //print out abstract method name
 		System.out.print(ctx.getChild(1).getText()); // (
@@ -154,16 +111,11 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		String parentClass = ctx.ident().getText();
 		
 		// Examine the existence of classes to be expanded
-		if (!isExistingClass(parentClass)) {
-			
-		}
+		
 		
 		return super.visitExtend(ctx);
 	}
 	
-	public boolean isExistingClass(String parentClass) {
-		return this.classList.containsKey(parentClass);
-	}
 	
 	@Override
 	public String visitParams(HelloParser.ParamsContext ctx) {
@@ -185,7 +137,7 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		System.out.print(str);
 		
 		String className = ctx.ident().getText();
-		classList.put(className, null);
+		
 		return super.visitClass_decl(ctx);
 	}
 	

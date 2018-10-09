@@ -1,16 +1,16 @@
 
-public class InfoNode {
+public class VariableInfoNode {
 	private String identifier;
-	private Type type;
+	private int type;
 	private Object value;
 	
-	public InfoNode(String identifier, Type type, Object value) {
+	public VariableInfoNode(String identifier, int type, Object value) {
 		this.identifier = identifier;
 		this.type = type;
 		this.value = value;
 	}
 
-	public String getIdentifier() {
+	public String identifier() {
 		return identifier;
 	}
 
@@ -18,15 +18,15 @@ public class InfoNode {
 		this.identifier = identifier;
 	}
 
-	public Type getType() {
+	public int type() {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 
-	public Object getValue() {
+	public Object value() {
 		return value;
 	}
 
