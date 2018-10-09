@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -13,6 +15,7 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	ArrayList<VariableInfoNode> localVriableTable = new ArrayList<VariableInfoNode>();
 	ArrayList<VariableInfoNode> staticVriableTable = new ArrayList<VariableInfoNode>();
 	
+	String currentClass = "";
 	@Override
 	public String visitProgram(HelloParser.ProgramContext ctx) {
 		System.out.println();
@@ -134,7 +137,7 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	
 	@Override
 	public String visitParam(HelloParser.ParamContext ctx) {
-		// TODO Auto-generated method stub
+		System.out.print("Object ");
 		return super.visitParam(ctx);
 	}
 	
@@ -146,7 +149,7 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		
 		//indent가 공백이거나 null이면 에러를 띄워야함
 		String className = ctx.ident().getText();
-		
+		currentClass = className;
 		ClassInfoNode node = new ClassInfoNode(className);
 		classTable.add(node);
 		
@@ -163,12 +166,12 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 			if(i!=0){
 				str+=", ";
 			}
-			int index = getInterfaceIndex(list[i].trim());
+			/*int index = getInterfaceIndex(list[i].trim());
 			if(index == -1){
 				//예외처리 해야될 부분 
 				System.out.println("error");
-			}
-			str +=list[i];
+			}*/
+			str +=list[i].trim();
 		}
 		
 		System.out.println(str);
@@ -183,9 +186,10 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 		return list.split(",");
 	}
+	
 	@Override
 	public String visitClass_compound(HelloParser.Class_compoundContext ctx) {
-		// TODO Auto-generated method stub
+		
 		System.out.println(ctx.getChild(0).getText());
 		super.visitClass_compound(ctx);
 		System.out.println(ctx.getChild((ctx.getChildCount()-1)).getText());
@@ -194,24 +198,10 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	
 	@Override
 	public String visitClass_field(HelloParser.Class_fieldContext ctx) {
-		// TODO Auto-generated method stub
-		//변수테이블에서 변수 관리
 //		super.visitClass_field(ctx);
-		declaresVar(ctx);
 		return "";
 	}
 	
-	public void declaresVar(HelloParser.Class_fieldContext ctx) {
-		//can't cast to HelloParser.Assignment_stmtContext;
-//		HelloParser.Assignment_stmtContext assignCtx = (HelloParser.Assignment_stmtContext) ctx.getChild(0);
-//		
-//		if (assignValue(assignCtx)) {
-//			
-//		}
-//		else { //declaration without assignment
-//			
-//		}
-	}
 	
 	public boolean assignValue(HelloParser.Assignment_stmtContext ctx) {
 		return (ctx.getChildCount() == 3);
@@ -290,16 +280,38 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitMethod_call(HelloParser.Method_callContext ctx) {
-		// TODO Auto-generated method stub
 		return super.visitMethod_call(ctx);
 	}
 
 	@Override
 	public String visitClass_method(HelloParser.Class_methodContext ctx) {
-		// TODO Auto-generated method stub
+		System.out.print("public Object");
+		
+		String methodName = ctx.getChild(0).getText();
+		int parameterNumber = 0;
+		visit(ctx.getChild(0)); 
+		
+		//get child number 
+		if(ctx.getChildCount()>4){
+			int child = ctx.getChild(2).getChildCount(); 
+			parameterNumber = (child/2) + (child%2);
+		}
+		
+		/*int index = getInterfaceIndex(interfaceName);
+		interfaceTable.get(index).addMethod(methodName, parameterNumber);
+		
+		System.out.print(ctx.getChild(1).getText());
+		
+		if (ctx.getChildCount() > 3) {
+			visit(ctx.getChild(2));
+		}
+		
+		str = ctx.getChild((ctx.getChildCount()-1)).getText();
+		System.out.println(str+";");
+		return "";*/
 		return super.visitClass_method(ctx);
 	}
-
+	
 	@Override
 	public String visitElse_if_condition(HelloParser.Else_if_conditionContext ctx) {
 		// TODO Auto-generated method stub
@@ -356,8 +368,10 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitCompound(HelloParser.CompoundContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitCompound(ctx);
+		System.out.println("\n"+ctx.getChild(0).getText());
+		super.visitCompound(ctx);
+		System.out.println(ctx.getChild(ctx.getChildCount()-1));
+		return "";
 	}
 
 	@Override
