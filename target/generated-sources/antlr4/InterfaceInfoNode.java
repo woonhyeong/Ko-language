@@ -8,8 +8,8 @@ public class InterfaceInfoNode {
 		this.methods = new ArrayList<MethodInfoNode>();
 		this.name = name;
 	}
-
-	public void addMethodName(String name,int parameter){
+	
+	public void addMethod(String name,int parameter){
 		MethodInfoNode addMethod = new MethodInfoNode(name, parameter);
 		methods.add(addMethod);
 	}
@@ -20,5 +20,13 @@ public class InterfaceInfoNode {
 	
 	public void setMethods(ArrayList<MethodInfoNode> methods){
 		this.methods = methods;
+	}
+	
+	public String name(){
+		return this.name;
+	}
+	
+	public void setName(String name){
+		this.name = name;
 	}
 }

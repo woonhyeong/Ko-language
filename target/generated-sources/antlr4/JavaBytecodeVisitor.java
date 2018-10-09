@@ -7,21 +7,21 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
+	ArrayList<ClassInfoNode> classTable = new ArrayList<ClassInfoNode>();
+	ArrayList<StaticClassInfoNode> classStaticTable = new ArrayList<StaticClassInfoNode>();
+	ArrayList<InterfaceInfoNode> interfaceTable = new ArrayList<InterfaceInfoNode>();
+	ArrayList<VariableInfoNode> localVriableTable = new ArrayList<VariableInfoNode>();
+	ArrayList<VariableInfoNode> staticVriableTable = new ArrayList<VariableInfoNode>();
 	
-
 	@Override
 	public String visitProgram(HelloParser.ProgramContext ctx) {
-		// TODO Auto-generated method stub
 		System.out.println();
 		return super.visitProgram(ctx);
 	}
 	
 	@Override
 	public String visitPackage_decl(HelloParser.Package_declContext ctx) {
-		// TODO Auto-generated method stub
-		//Add "�ٷ���" to print out
-		String str = "package ";
-		System.out.print(str);
+		System.out.print("package ");
 		super.visitPackage_decl(ctx);
 		System.out.println(";");
 		return "";
@@ -29,23 +29,19 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	
 	@Override
 	public String visitComma(HelloParser.CommaContext ctx) {
-		// TODO Auto-generated method stub
 		System.out.print(", ");
 		return super.visitComma(ctx);
 	}
 
 	@Override
 	public String visitDot(HelloParser.DotContext ctx) {
-		// TODO Auto-generated method stub
 		System.out.print(".");
 		return super.visitDot(ctx);
 	}
 
 	@Override
 	public String visitImport_decl(HelloParser.Import_declContext ctx) {
-		// TODO Auto-generated method stubs
-		String str = "import ";
-		System.out.print(str);
+		System.out.print("import ");
 		super.visitImport_decl(ctx);
 		System.out.println(";");
 		
@@ -54,19 +50,19 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	
 	@Override
 	public String visitInterface_decl(HelloParser.Interface_declContext ctx) {
-		// TODO Auto-generated method stub
-		//System.out.println("\nInterface decl");
-		String str = "interface ";
-		System.out.print(str);
+		System.out.print("interface ");
 		
 		return super.visitInterface_decl(ctx);
 	}
 	
 	@Override
 	public String visitInterface_compound(HelloParser.Interface_compoundContext ctx) {
-		// TODO Auto-generated method stub
-		String str = ctx.getChild(0).getText();
-		System.out.println("\n" + str);
+		System.out.println("\n"+ctx.getChild(0).getText());
+		
+		String interfaceName = getInterfaceName(ctx);
+		InterfaceInfoNode node = new InterfaceInfoNode(interfaceName);
+		interfaceTable.add(node);
+		
 		super.visitInterface_compound(ctx);
 		System.out.println(ctx.getChild(ctx.getChildCount()-1).getText());
 		return "";
@@ -74,19 +70,26 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	
 	@Override
 	public String visitInterface_method(HelloParser.Interface_methodContext ctx) {
-		// TODO Auto-generated method stub
-//		System.out.println("Interface method");
 		String str = "public Object ";
 		System.out.print(str);
 		
-		/*
-		 * Saving information about the interface's method list
-		 */
-		String interfaceName = getInterfaceName(ctx);
+		String interfaceName = ((HelloParser.Interface_declContext)ctx.parent.parent).ident().getText();
+		String methodName = "";
+		int parameterNumber = 0;
 		
+		methodName = ctx.getChild(0).getText();
+		visit(ctx.getChild(0)); 
 		
-		visit(ctx.getChild(0)); //print out abstract method name
-		System.out.print(ctx.getChild(1).getText()); // (
+		//get child number 
+		if(ctx.getChildCount()>3){
+			int child = ctx.getChild(2).getChildCount(); 
+			parameterNumber = (child/2) + (child%2);
+		}
+		
+		int index = getInterfaceIndex(interfaceName);
+		interfaceTable.get(index).addMethod(methodName, parameterNumber);
+		
+		System.out.print(ctx.getChild(1).getText());
 		
 		if (ctx.getChildCount() > 3) {
 			visit(ctx.getChild(2));
@@ -96,22 +99,28 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		System.out.println(str+";");
 		return "";
 	}
-
-	public String getInterfaceName(HelloParser.Interface_methodContext ctx) {
+	
+	public int getInterfaceIndex(String name){
+		for(int i=0; i<interfaceTable.size(); i++){
+			if(interfaceTable.get(i).name().equals(name))
+				return i;
+		}
+		return -1;	
+	}
+	
+	public String getInterfaceName(HelloParser.Interface_compoundContext ctx) {
 		HelloParser.Interface_declContext interface_decl 
-			= (HelloParser.Interface_declContext) ctx.parent.parent;
+			= (HelloParser.Interface_declContext) ctx.parent;
 		
 		return interface_decl.ident().getText();
 	}
 	
 	@Override
 	public String visitExtend(HelloParser.ExtendContext ctx) {
-		// TODO Auto-generated method stub
-		//System.out.println("Extend");
+		System.out.print(" extends ");
+		
+		//extends 할 파일을 검사할 필요가 있음 (import 미구현으로 아직 불가능)
 		String parentClass = ctx.ident().getText();
-		
-		// Examine the existence of classes to be expanded
-		
 		
 		return super.visitExtend(ctx);
 	}
@@ -131,37 +140,48 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	
 	@Override
 	public String visitClass_decl(HelloParser.Class_declContext ctx) {
-		// TODO Auto-generated method stub
-		//System.out.println("Class decl");
-		String str = "public class ";
+	
+		String str = "\npublic class ";
 		System.out.print(str);
 		
+		//indent가 공백이거나 null이면 에러를 띄워야함
 		String className = ctx.ident().getText();
+		
+		ClassInfoNode node = new ClassInfoNode(className);
+		classTable.add(node);
 		
 		return super.visitClass_decl(ctx);
 	}
 	
 	@Override
 	public String visitImplement(HelloParser.ImplementContext ctx) {
-		// TODO Auto-generated method stub
-		//System.out.println("Implement");
-		String str = "";
-//		if (afterExtends(ctx)) {
-//			str += ", ";
-//		}
+		String str = " implements ";
+		String list[];
+		list = getImplementationClassList(ctx);
 		
-		str += " implements " + getImplementationClassList(ctx);		
+		for(int i = 0; i<list.length; i++){
+			if(i!=0){
+				str+=", ";
+			}
+			int index = getInterfaceIndex(list[i].trim());
+			if(index == -1){
+				//예외처리 해야될 부분 
+				System.out.println("error");
+			}
+			str +=list[i];
+		}
+		
 		System.out.println(str);
 		return "";
 	}
 	
-	public String getImplementationClassList(HelloParser.ImplementContext ctx) {
+	public String[] getImplementationClassList(HelloParser.ImplementContext ctx) {
 		//trim strings excepts class names
 		String str = ctx.getPayload().getText();
 		String list = str.split("]")[0];
-		list = list.substring(1, list.length());
+		list = list.substring(1, list.length()).trim();
 
-		return list + " ";
+		return list.split(",");
 	}
 	@Override
 	public String visitClass_compound(HelloParser.Class_compoundContext ctx) {
@@ -369,5 +389,4 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		// TODO Auto-generated method stub
 		return super.visitStmt(ctx);
 	}
-
 }
