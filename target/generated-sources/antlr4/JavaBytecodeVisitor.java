@@ -284,11 +284,14 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	}
 
 	@Override
-	public String visitClass_method(HelloParser.Class_methodContext ctx) {
-		System.out.print("public Object");
-		
+	public String visitClass_method(HelloParser.Class_methodContext ctx) {		
 		String methodName = ctx.getChild(0).getText();
 		int parameterNumber = 0;
+		if(methodName.equals(currentClass)){
+			System.out.print("public ");
+		}else 
+			System.out.print("public Object ");
+		
 		visit(ctx.getChild(0)); 
 		
 		//get child number 
@@ -297,8 +300,8 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 			parameterNumber = (child/2) + (child%2);
 		}
 		
-		/*int index = getInterfaceIndex(interfaceName);
-		interfaceTable.get(index).addMethod(methodName, parameterNumber);
+		//int index = getInterfaceIndex(interfaceName);
+		//interfaceTable.get(index).addMethod(methodName, parameterNumber);
 		
 		System.out.print(ctx.getChild(1).getText());
 		
@@ -306,10 +309,9 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 			visit(ctx.getChild(2));
 		}
 		
-		str = ctx.getChild((ctx.getChildCount()-1)).getText();
-		System.out.println(str+";");
-		return "";*/
-		return super.visitClass_method(ctx);
+		System.out.print(ctx.getChild((ctx.getChildCount()-2)).getText());
+		visit(ctx.getChild(ctx.getChildCount()-1));
+		return "";
 	}
 	
 	@Override
