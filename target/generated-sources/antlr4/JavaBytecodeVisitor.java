@@ -219,8 +219,13 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	}
 	@Override
 	public String visitAssignment_stmt(HelloParser.Assignment_stmtContext ctx) {
-		// TODO Auto-generated method stub
-//		return super.visitAssignment_stmt(ctx);
+		if(ctx.getChildCount() == 1){
+			System.out.println("Object "+ctx.getChild(0).getText()+";");
+			
+		}else{
+			System.out.println("Object "+ctx.getChild(0).getText()+"="+ctx.getChild(2).getText() +";");
+			
+		}
 		return "";
 	}
 	
@@ -266,8 +271,14 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitIf_stmt(HelloParser.If_stmtContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitIf_stmt(ctx);
+		System.out.print("if(");
+		visit(ctx.getChild(0)); // if 조건문 방문
+		System.out.print(")");
+		for(int i = 1; i<ctx.getChildCount();i++){
+				visit(ctx.getChild(i));
+			}
+		
+		return "";
 	}
 
 	@Override
@@ -311,13 +322,16 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		
 		System.out.print(ctx.getChild((ctx.getChildCount()-2)).getText());
 		visit(ctx.getChild(ctx.getChildCount()-1));
+		
 		return "";
 	}
 	
 	@Override
 	public String visitElse_if_condition(HelloParser.Else_if_conditionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitElse_if_condition(ctx);
+		System.out.print("else if(");
+		visit(ctx.getChild(1));
+		System.out.print(")");
+		return "";
 	}
 
 	@Override
@@ -334,8 +348,11 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitWhile_stmt(HelloParser.While_stmtContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitWhile_stmt(ctx);
+		System.out.print("while(");
+		visit(ctx.getChild(0));
+		System.out.print(")");
+		visit(ctx.getChild(2));
+		return "";
 	}
 
 	@Override
@@ -364,8 +381,8 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitElse_condition(HelloParser.Else_conditionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitElse_condition(ctx);
+		System.out.print("else");
+		return "";
 	}
 
 	@Override
@@ -390,13 +407,14 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitContinue_stmt(HelloParser.Continue_stmtContext ctx) {
-		// TODO Auto-generated method stub
+		System.out.println("continue;");
 		return super.visitContinue_stmt(ctx);
 	}
 
 	@Override
 	public String visitBreak_stmt(HelloParser.Break_stmtContext ctx) {
 		// TODO Auto-generated method stub
+		System.out.println("break;");
 		return super.visitBreak_stmt(ctx);
 	}
 
