@@ -217,13 +217,15 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	public boolean classHasMultipleVar(HelloParser.Class_field_declContext ctx){
 		return (ctx.getParent().getChildCount() > 3);
 	}
+	
 	@Override
 	public String visitAssignment_stmt(HelloParser.Assignment_stmtContext ctx) {
 		if(ctx.getChildCount() == 1){
 			System.out.println("Object "+ctx.getChild(0).getText()+";");
-			
 		}else{
-			System.out.println("Object "+ctx.getChild(0).getText()+"="+ctx.getChild(2).getText() +";");
+			System.out.print("Object "+ctx.getChild(0).getText());
+			visit(ctx.getChild(1));
+			System.out.println(ctx.getChild(2).getText() +";");
 			
 		}
 		return "";
@@ -238,20 +240,20 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitNum(HelloParser.NumContext ctx) {
-		// TODO Auto-generated method stub
+		System.out.print(ctx.getPayload().getText());
 		return super.visitNum(ctx);
 	}
 
 	@Override
 	public String visitAssign_symbol(HelloParser.Assign_symbolContext ctx) {
-		// TODO Auto-generated method stub
+		System.out.print(" = ");
 		return super.visitAssign_symbol(ctx);
 	}
 
 	@Override
 	public String visitReturn_symbol(HelloParser.Return_symbolContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitReturn_symbol(ctx);
+		System.out.print("return ");
+		return "";
 	}
 
 	public boolean assignsVal(HelloParser.Assignment_stmtContext ctx) {
@@ -336,8 +338,14 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitReturn_stmt(HelloParser.Return_stmtContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitReturn_stmt(ctx);
+		if(ctx.getChildCount() == 1){
+			visit(ctx.getChild(0));
+			System.out.print(" \"\"");
+		}else {
+			visit(ctx.getChild(1));
+			visit(ctx.getChild(0));
+		}
+		return "";
 	}
 
 	@Override
