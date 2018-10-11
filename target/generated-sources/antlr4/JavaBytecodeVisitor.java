@@ -92,14 +92,13 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 		int index = getInterfaceIndex(interfaceName);
 		interfaceTable.get(index).addMethod(methodName, parameterNumber);
 		
-		System.out.print(ctx.getChild(1).getText());
+		System.out.print("(");
 		
 		if (ctx.getChildCount() > 3) {
 			visit(ctx.getChild(2));
 		}
 		
-		str = ctx.getChild((ctx.getChildCount()-1)).getText();
-		System.out.println(str+";");
+		System.out.println(");");
 		return "";
 	}
 	
@@ -190,15 +189,17 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	@Override
 	public String visitClass_compound(HelloParser.Class_compoundContext ctx) {
 		
-		System.out.println(ctx.getChild(0).getText());
+		System.out.println("{");
 		super.visitClass_compound(ctx);
-		System.out.println(ctx.getChild((ctx.getChildCount()-1)).getText());
+		System.out.println("}");
 		return "";
 	}
 	
 	@Override
 	public String visitClass_field(HelloParser.Class_fieldContext ctx) {
-//		super.visitClass_field(ctx);
+		for(int i = 1; i<ctx.getChildCount(); i +=2){
+			visit(ctx.getChild(i));
+		}
 		return "";
 	}
 	
@@ -209,8 +210,6 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	
 	@Override
 	public String visitClass_field_decl(HelloParser.Class_field_declContext ctx) {
-		// TODO Auto-generated method stub
-		//System.out.print("Class field decl");
 		return super.visitClass_field_decl(ctx);
 	}
 	
@@ -221,6 +220,8 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	@Override
 	public String visitAssignment_stmt(HelloParser.Assignment_stmtContext ctx) {
 		if(ctx.getChildCount() == 1){
+			if(ctx.getParent().getParent().getParent().getChildCount()==2)
+				System.out.print("static final ");
 			System.out.println("Object "+ctx.getChild(0).getText()+";");
 		}else{
 			System.out.print("Object "+ctx.getChild(0).getText());
@@ -233,7 +234,6 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	
 	@Override
 	public String visitIdent(HelloParser.IdentContext ctx) {
-		// TODO Auto-generated method stub
 		System.out.print(ctx.getPayload().getText());
 		return super.visitIdent(ctx);
 	}
@@ -252,7 +252,6 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitReturn_symbol(HelloParser.Return_symbolContext ctx) {
-		System.out.print("return ");
 		return "";
 	}
 
@@ -339,11 +338,9 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 	@Override
 	public String visitReturn_stmt(HelloParser.Return_stmtContext ctx) {
 		if(ctx.getChildCount() == 1){
-			visit(ctx.getChild(0));
-			System.out.print(" \"\"");
+			System.out.print("return \"\";");
 		}else {
-			visit(ctx.getChild(1));
-			visit(ctx.getChild(0));
+			System.out.println("return "+ctx.expression().getText()+";");
 		}
 		return "";
 	}
@@ -403,8 +400,7 @@ public class JavaBytecodeVisitor extends HelloBaseVisitor<String>{
 
 	@Override
 	public String visitClass_static_field(HelloParser.Class_static_fieldContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitClass_static_field(ctx);
+			return super.visitClass_static_field(ctx);
 	}
 
 	@Override

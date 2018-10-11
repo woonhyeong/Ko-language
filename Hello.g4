@@ -104,11 +104,11 @@ compound
 stmt 
 : 	if_stmt 
 	| while_stmt 
-	| assignment_stmt 
 	| return_stmt 
 	| method_call 
 	| continue_stmt 
 	| break_stmt 
+	| assignment_stmt 
 ;
 
 if_stmt 
@@ -194,7 +194,7 @@ assign_symbol
 				  
 return_stmt 
 : 
-	expression return_symbol 
+	 expression return_symbol 
 	| return_symbol 
 ; 
 
@@ -254,17 +254,17 @@ THIS
 
 RETURN
 : 
-	'내보내기'
+	'!내보내기'
 ;
 
 CONTINUE
 : 
-	'다시 위로'
+	'!다시 위로'
 ;
 
 BREAK
 : 
-	'나가기'
+	'!나가기'
 ;
 
 op : '+' | '-' | '*' | '/' | '%' | '=' | '<' | '>' | '>=' | '<=' | '그리고' | '또는' | '!=' ;

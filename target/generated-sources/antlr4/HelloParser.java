@@ -30,7 +30,8 @@ public class HelloParser extends Parser {
 		"'('", "'*'", "','", "'.'", "'<-'", "'아니면'", "'혹은'", "']은'", "'틀'", "'>='", 
 		"'['", "'--'", "'++'", "'<'", "'|'", "']을'", "']'", "'>'", "'참'", "'또는'", 
 		"'!'", "'%'", "'계속'", "')'", "'꾸러미'", "'가져오기'", "'+'", "'-'", "']는'", 
-		"NUM", "IDENT", "'#'", "'부모'", "'자신'", "'내보내기'", "'다시 위로'", "'나가기'", "WS"
+		"NUM", "IDENT", "'#'", "'부모'", "'자신'", "'!내보내기'", "'!다시 위로'", "'!나가기'", 
+		"WS"
 	};
 	public static final int
 		RULE_program = 0, RULE_package_decl = 1, RULE_dot = 2, RULE_import_decl = 3, 
@@ -1394,31 +1395,31 @@ public class HelloParser extends Parser {
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(249); assignment_stmt();
+				setState(249); return_stmt();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(250); return_stmt();
+				setState(250); method_call();
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(251); method_call();
+				setState(251); continue_stmt();
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(252); continue_stmt();
+				setState(252); break_stmt();
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(253); break_stmt();
+				setState(253); assignment_stmt();
 				}
 				break;
 			}
@@ -2866,8 +2867,8 @@ public class HelloParser extends Parser {
 		"\'\3\2\2\2\u00f0\u00f4\7\n\2\2\u00f1\u00f3\5*\26\2\u00f2\u00f1\3\2\2\2"+
 		"\u00f3\u00f6\3\2\2\2\u00f4\u00f2\3\2\2\2\u00f4\u00f5\3\2\2\2\u00f5\u00f7"+
 		"\3\2\2\2\u00f6\u00f4\3\2\2\2\u00f7\u00f8\7\r\2\2\u00f8)\3\2\2\2\u00f9"+
-		"\u0101\5,\27\2\u00fa\u0101\5\64\33\2\u00fb\u0101\5B\"\2\u00fc\u0101\5"+
-		"F$\2\u00fd\u0101\5J&\2\u00fe\u0101\5N(\2\u00ff\u0101\5P)\2\u0100\u00f9"+
+		"\u0101\5,\27\2\u00fa\u0101\5\64\33\2\u00fb\u0101\5F$\2\u00fc\u0101\5J"+
+		"&\2\u00fd\u0101\5N(\2\u00fe\u0101\5P)\2\u00ff\u0101\5B\"\2\u0100\u00f9"+
 		"\3\2\2\2\u0100\u00fa\3\2\2\2\u0100\u00fb\3\2\2\2\u0100\u00fc\3\2\2\2\u0100"+
 		"\u00fd\3\2\2\2\u0100\u00fe\3\2\2\2\u0100\u00ff\3\2\2\2\u0101+\3\2\2\2"+
 		"\u0102\u0103\5.\30\2\u0103\u0104\5(\25\2\u0104\u0117\3\2\2\2\u0105\u0106"+
