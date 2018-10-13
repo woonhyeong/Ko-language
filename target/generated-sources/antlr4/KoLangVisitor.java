@@ -5,30 +5,30 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class KoLangVisitor extends HelloBaseVisitor<String>{
 	Procedure procedure = new ProcedureImpl();
+	StringBuilder sb = new StringBuilder();
 	
 	@Override
 	public String visitProgram(HelloParser.ProgramContext ctx) {
 		// TODO Auto-generated method stub
-		return "";
+		return super.visitProgram(ctx);
 	}
 	
 	@Override
 	public String visitPackage_decl(HelloParser.Package_declContext ctx) {
 		// TODO Auto-generated method stub
-		//Add "�ٷ���" to print out
-		return "";
+		return super.visitPackage_decl(ctx);
 	}
 	
 	@Override
 	public String visitComma(HelloParser.CommaContext ctx) {
 		// TODO Auto-generated method stub
-		return "";
+		return super.visitComma(ctx);
 	}
 
 	@Override
 	public String visitDot(HelloParser.DotContext ctx) {
 		// TODO Auto-generated method stub
-		return "";
+		return super.visitDot(ctx);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		 * @return void
 		 */
 		procedure.storeCodesImported();
-		return "";
+		return super.visitImport_decl(ctx);
 	}
 	
 	@Override
@@ -61,13 +61,13 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		 * @return void
 		 */
 		procedure.initInterfaceInfo();
-		return "";
+		return super.visitInterface_decl(ctx);
 	}
 
 	@Override
 	public String visitInterface_compound(HelloParser.Interface_compoundContext ctx) {
 		// TODO Auto-generated method stub
-		return "";
+		return super.visitInterface_compound(ctx);
 	}
 	
 	@Override
@@ -81,7 +81,6 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		 * @return int 	This returns number of parameters
 		 */
 		int numOfParams = procedure.getNumOfParamsOfAbstractMethod(ctx);
-		
 		/*
 		 * This function returns the name of interface's abstract method.
 		 * 
@@ -89,7 +88,6 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		 * @return String 	This returns the name of abstract method
 		 */
 		String abstractMethodName = procedure.getAbstractMethodName(ctx);
-		
 		
 		/*
 		 * Save the info(numOfParam, methodName) of abstract method.
@@ -99,7 +97,7 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		 * 
 		 */
 		procedure.saveAbstractMethodInfo();
-		return "";
+		return super.visitInterface_method(ctx);
 	}
 	
 	@Override
@@ -122,7 +120,7 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 			//에외처리
 		}
 		
-		return "";
+		return super.visitExtend(ctx);
 	}
 	
 	@Override
@@ -153,7 +151,7 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		 * @return void
 		 */
 		procedure.initInterfaceInfo();
-		return "";
+		return super.visitClass_decl(ctx);
 	}
 	
 	@Override
@@ -177,7 +175,7 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		else {
 			//에외처리
 		}
-		return "";
+		return super.visitImplement(ctx);
 	}
 
 //	@Override
@@ -201,7 +199,7 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 	@Override
 	public String visitClass_compound(HelloParser.Class_compoundContext ctx) {
 		// TODO Auto-generated method stub
-		return "";
+		return super.visitClass_compound(ctx);
 	}
 	
 	@Override
@@ -224,7 +222,7 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 	@Override
 	public String visitClass_field(HelloParser.Class_fieldContext ctx) {
 		// TODO Auto-generated method stub
-		return "";
+		return super.visitClass_field(ctx);
 	}
 	
 	@Override
@@ -239,13 +237,14 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		 */
 		procedure.saveClassVariables();
 //		printClassvariables();
-		return "";
+		return super.visitClass_field_decl(ctx);
 	}
 
 	@Override
 	public String visitClass_method(HelloParser.Class_methodContext ctx) {
 		// TODO Auto-generated method stub
-		
+		String str = "";
+
 		/*
 		 * This function returns number of parameter of class' method.
 		 * 
@@ -260,17 +259,22 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		 * @param ctx grammar 	context((HelloParser.Interface_methodContext)
 		 * @return String 	This returns the name of abstract method
 		 */
-		String abstractMethodName = procedure.getCurrentMethodName(ctx);
+		String classMethodName = procedure.getCurrentMethodName(ctx);
 		
+		//생성자 인지 아닌지 구분
+		if(procedure.getClassNameIncludingMethod(ctx).equals(classMethodName))
+			sb.append("public ");
+		else sb.append("public Object ");
 		
 		/*
 		 * Save the info(numOfParam, methodName) of abstract method.
 		 * To save method information, 
-		 * get the name of interface that the method is included.
-		 * getInterfaceNameIncludingMethod() should be implemented to use in saveAbstractMethodInfo().
+		 * get the name of class that the method is included.
+		 * getInterfaceNameIncludingMethod() should be implemented to use in saveClassMethodInfo().
 		 * 
 		 */
-		procedure.saveClassMethodInfo();
+		procedure.saveClassMethodInfo(numOfParams,classMethodName,ctx);
+		
 		return super.visitClass_method(ctx);
 	}
 	
@@ -301,13 +305,12 @@ public class KoLangVisitor extends HelloBaseVisitor<String>{
 		else {
 			//예외처리
 		}
-		return "";
+		return super.visitAssignment_stmt(ctx);
 	}
 	
 	@Override
 	public String visitIdent(HelloParser.IdentContext ctx) {
 		// TODO Auto-generated method stub
-		System.out.print(ctx.getPayload().getText());
 		return super.visitIdent(ctx);
 	}
 

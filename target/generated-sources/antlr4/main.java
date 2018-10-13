@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+
 public class main {
 	public static ParseTree makeASTtree(HelloParser parser){
 		ParseTree tree = parser.program();
@@ -37,19 +38,6 @@ public class main {
 		ParseTree tree = parser.program();
 	        
 		new KoLangVisitor().visit(tree);
-		//new HelloBaseVisitor().visit(tree);
-		
-		/*
-		MiniCAstVisitor visitor = new MiniCAstVisitor();
-		UcodeGenVisitor v = new UcodeGenVisitor();
-		visitor.visit(tree).accept(v);
-		
-		String path = Paths.get(".").toAbsolutePath().normalize().toString();
-		BufferedWriter fw = new BufferedWriter(new FileWriter(path+"\\test.txt", false));
-		fw.write(v.code);
-		fw.flush();
-		System.out.println(path+"\\test.txt");
-		*/
 		} catch (IOException e){
 			e.printStackTrace();
 		}

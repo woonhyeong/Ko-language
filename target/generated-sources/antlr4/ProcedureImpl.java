@@ -123,13 +123,17 @@ public class ProcedureImpl implements Procedure{
 	@Override
 	public int getNumOfParamsOfClassMethod(HelloParser.Class_methodContext ctx) {
 		// TODO Auto-generated method stub
-		return 0;
+		int paramsChild = ctx.getChild(2).getChildCount();
+		
+		return (paramsChild%2) + (paramsChild/2);
 	}
 
 	@Override
-	public void saveClassMethodInfo() {
+	public void saveClassMethodInfo(int numOfParams, String methodName, HelloParser.Class_methodContext ctx) {
 		// TODO Auto-generated method stub
+		methodNode m = new methodNode(methodName,numOfParams);
 		
+		classList.get(getClassNameIncludingMethod(ctx)).getClassMethods().put(methodName, m);
 	}
 
 	@Override
@@ -159,7 +163,11 @@ public class ProcedureImpl implements Procedure{
 	@Override
 	public <T> String getCurrentMethodName(T ctx) {
 		// TODO Auto-generated method stub
-		return null;
+		String name = "";
+		if(ctx instanceof HelloParser.Class_methodContext ){
+			name = ((HelloParser.Class_methodContext) ctx).ident().getText();
+		}
+		return name;
 	}
 
 	@Override
@@ -202,6 +210,11 @@ public class ProcedureImpl implements Procedure{
 	public <T> boolean isVariableDeclWithValueAssignment(T ctx) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public String getClassNameIncludingMethod(HelloParser.Class_methodContext ctx) {
+		
+		return ctx.getParent().getParent().getChild(2).getText();
 	}
 	
 }

@@ -15,7 +15,11 @@ public interface Procedure {
 	public int getNumOfParamsOfClassMethod(HelloParser.Class_methodContext ctx);
 	public <T> String getCurrentClassName(T ctx);
 	public <T> String getCurrentMethodName(T ctx);
-	public void saveClassMethodInfo();
+	/*
+	 * parameters of saveClassMethodInfo()
+	 * modified 0 to 3 (int ,String, HelloParser.Class_methodContext)  
+	 */
+	public void saveClassMethodInfo(int numOfParams, String methodName,HelloParser.Class_methodContext ctx);
 	public boolean isValidAssignment(HelloParser.Assignment_stmtContext ctx);
 	public boolean returnTargetIsValid(HelloParser.Return_stmtContext ctx);
 	public boolean conditionIsBooleanValue(HelloParser.If_conditionContext ctx);
@@ -26,4 +30,11 @@ public interface Procedure {
 	public <T> boolean isClass(T ctx);
 	public <T> boolean isExistingVariable(T varName);
 	public <T> boolean isVariableDeclWithValueAssignment(T ctx);
+	/*
+	 * added methods from woonhyeong
+	 * 
+	 *  1. getClassNameIncludingMethod() : get class name of current method
+	 */
+	public String getClassNameIncludingMethod(HelloParser.Class_methodContext ctx);
+	
 }
