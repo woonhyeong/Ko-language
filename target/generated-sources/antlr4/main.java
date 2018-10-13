@@ -36,7 +36,7 @@ public class main {
 			//makeASTtree(parser);
 			ParseTree tree = parser.program();
 
-			new JavaBytecodeVisitor().visit(tree);
+			new KoLangVisitor().visit(tree);
 		
 		} catch (IOException e){
 			e.printStackTrace();
